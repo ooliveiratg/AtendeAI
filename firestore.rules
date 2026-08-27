@@ -1,0 +1,22 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Modelo multi-tenant: cada documento em "atendimentos" tem um campo "tenantId".
+    // Regra inicial básica — parte do teste pode incluir revisar/reforçar isto.
+    // Por padrão, o acesso direto do cliente é bloqueado: toda leitura/escrita
+    // de "atendimentos" passa pelas Cloud Functions (que usam o Admin SDK e
+    // validam o tenant a partir do contexto autenticado).
+
+    match /tenants/{tenantId} {
+      allow read: if false;
+      allow write: if false;
+    }
+
+    match /atendimentos/{atendimentoId} {
+      allow read: if false;
+      allow write: if false;
+    }
+  }
+}
