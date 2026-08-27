@@ -1,4 +1,5 @@
 import * as admin from "firebase-admin";
+import { afterAll, describe, expect, it } from "@jest/globals";
 
 // Garante um único app inicializado apontando para o emulador
 // (FIRESTORE_EMULATOR_HOST é definido no script "npm test").

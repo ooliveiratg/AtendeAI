@@ -1,5 +1,7 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { db } from "./admin";
+import { PrioridadeTiposEnum } from "./enum/PrioridadeEnum";
+import { CreateAtendimentoDTO } from "./dto/CreateAtendimentoDTO";
 
 /**
  * Function de exemplo — só para você confirmar que o ambiente está rodando.
@@ -38,16 +40,36 @@ export const listAtendimentos = onCall(async (request) => {
  * Implementação mínima — sem validação de schema.
  */
 export const createAtendimento = onCall(async (request) => {
-  const { tenantId, transcricao, duracaoSegundos } = request.data ?? {};
+  const {
+    tenantId,
+    transcricao,
+    duracaoSegundos,
+    prioridade,
+  }: CreateAtendimentoDTO = request.data ?? {};
 
   if (!tenantId || typeof tenantId !== "string") {
     throw new HttpsError("invalid-argument", "tenantId é obrigatório.");
+  }
+
+  let dbPrioridade: PrioridadeTiposEnum = PrioridadeTiposEnum.media;
+
+  if (prioridade != null) {
+    if (
+      prioridade === PrioridadeTiposEnum.alta ||
+      prioridade === PrioridadeTiposEnum.baixa ||
+      prioridade === PrioridadeTiposEnum.media
+    ) {
+      dbPrioridade = prioridade;
+    } else {
+      throw new HttpsError("invalid-argument", "prioridade inválida.");
+    }
   }
 
   const doc = await db.collection("atendimentos").add({
     tenantId,
     transcricao: transcricao ?? "",
     duracaoSegundos: duracaoSegundos ?? 0,
+    prioridade: dbPrioridade,
     status: "novo",
     criadoEm: new Date().toISOString(),
   });
