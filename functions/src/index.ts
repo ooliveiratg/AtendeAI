@@ -1,7 +1,7 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { db } from "./admin";
 import { PrioridadeTiposEnum } from "./enum/PrioridadeEnum";
-import { createAtendimentoDTO } from "./dto/CreateAtendimentoDTO";
+import { CreateAtendimentoDTO } from "./dto/CreateAtendimentoDTO";
 
 /**
  * Function de exemplo — só para você confirmar que o ambiente está rodando.
