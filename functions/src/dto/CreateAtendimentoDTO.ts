@@ -1,8 +1,8 @@
 import { PrioridadeTiposEnum } from "../enum/PrioridadeEnum";
 
-export interface createAtendimentoDTO{
-    tenantId: string; 
-    transcricao?: string;
-    duracaoSegundos?: number;
-    prioridade?: string;
+export interface CreateAtendimentoDTO {
+  tenantId: string;
+  transcricao?: string;
+  duracaoSegundos?: number;
+  prioridade?: PrioridadeTiposEnum;
 }
