@@ -1,7 +1,7 @@
 import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { db } from "./admin";
 import { PrioridadeTiposEnum } from "./enum/PrioridadeEnum";
-import { CreateAtendimentoDTO } from "./dto/CreateAtendimentoDTO";
+import { createAtendimentoDTO } from "./dto/CreateAtendimentoDTO";
 
 /**
  * Function de exemplo — só para você confirmar que o ambiente está rodando.
@@ -69,11 +69,8 @@ export const createAtendimento = onCall(async (request) => {
     duracaoSegundos: duracaoSegundos ?? 0,
     prioridade: dbPrioridade,
     status: "novo",
-
     criadoEm: new Date().toISOString(),
   });
-  
-  
 
   return { id: doc.id };
 });
