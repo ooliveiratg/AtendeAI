@@ -51,16 +51,18 @@ export const createAtendimento = onCall(async (request) => {
     throw new HttpsError("invalid-argument", "tenantId é obrigatório.");
   }
 
-  let dbPrioridade;  
+  let dbPrioridade: PrioridadeTiposEnum = PrioridadeTiposEnum.media;
 
-  if(prioridade === PrioridadeTiposEnum.alta ||
-  prioridade === PrioridadeTiposEnum.baixa ||
-  prioridade === PrioridadeTiposEnum.media) {
-    dbPrioridade = prioridade
-  }else if(!prioridade){
-    dbPrioridade = PrioridadeTiposEnum.media;
-  }else{
-    throw new HttpsError("invalid-argument", "prioridade obrigatória");
+  if (prioridade != null) {
+    if (
+      prioridade === PrioridadeTiposEnum.alta ||
+      prioridade === PrioridadeTiposEnum.baixa ||
+      prioridade === PrioridadeTiposEnum.media
+    ) {
+      dbPrioridade = prioridade;
+    } else {
+      throw new HttpsError("invalid-argument", "prioridade inválida.");
+    }
   }
 
   const doc = await db.collection("atendimentos").add({
