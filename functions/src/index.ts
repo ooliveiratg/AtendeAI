@@ -47,15 +47,11 @@ export const createAtendimento = onCall(async (request) => {
     prioridade,
   }: createAtendimentoDTO = request.data ?? {};
 
-  console.log("ENTREI NA CREATE ATENDIMENTO");
   if (!tenantId || typeof tenantId !== "string") {
     throw new HttpsError("invalid-argument", "tenantId é obrigatório.");
   }
 
-
-  let dbPrioridade;
-  
-  
+  let dbPrioridade;  
 
   if(prioridade === PrioridadeTiposEnum.alta ||
   prioridade === PrioridadeTiposEnum.baixa ||
@@ -76,6 +72,8 @@ export const createAtendimento = onCall(async (request) => {
 
     criadoEm: new Date().toISOString(),
   });
+  
+  
 
   return { id: doc.id };
 });
