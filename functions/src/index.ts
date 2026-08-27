@@ -45,7 +45,7 @@ export const createAtendimento = onCall(async (request) => {
     transcricao,
     duracaoSegundos,
     prioridade,
-  }: createAtendimentoDTO = request.data ?? {};
+  }: CreateAtendimentoDTO = request.data ?? {};
 
   if (!tenantId || typeof tenantId !== "string") {
     throw new HttpsError("invalid-argument", "tenantId é obrigatório.");
