@@ -98,7 +98,7 @@ export default function App() {
                 backgroundColor: getPrioridadeColor(a.prioridade),
               }}
             ></div>
-          </section>
+          </li>
         ))}
       </ul>
     </div>
