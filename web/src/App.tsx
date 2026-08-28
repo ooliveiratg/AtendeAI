@@ -15,7 +15,6 @@ export default function App() {
   const [atendimentos, setAtendimentos] = useState<Atendimento[]>([]);
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
-  const [prioridade, setPrioridade] = useState<string | null>(null);
 
   function getPrioridadeColor(prioridade?: string) {
     switch (prioridade?.toLowerCase()) {
