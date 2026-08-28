@@ -1,5 +1,6 @@
 import * as admin from "firebase-admin";
 import { afterAll, describe, expect, it } from "@jest/globals";
+import { createAtendimento, updateAtendimentoStatus } from "../src";
 
 // Garante um único app inicializado apontando para o emulador
 // (FIRESTORE_EMULATOR_HOST é definido no script "npm test").
@@ -29,4 +30,43 @@ describe("modelo de dados básico", () => {
   // Este arquivo é só um exemplo de que o ambiente de testes está funcionando.
   // Testes adicionais (inclusive para o que você implementar) devem ser
   // adicionados por você, conforme pedido no enunciado do seu nível de teste.
+});
+
+describe("createAtendimento", () => {
+  it("permite gravar atendimento", async () => {
+    const request = {
+      data: {
+        tenantId: "tenant-teste",
+        transcricao: "teste automatizado",
+        duracaoSegundos: 30,
+        prioridade: "media",
+      },
+    };
+    const result = await createAtendimento.run(request as any);
+    expect(result.id).toBeDefined();
+  });
+
+  it("rejeita atendimento com prioridade inválida", async () => {
+    const request = {
+      data: {
+        tenantId: "tenant-teste",
+        transcricao: "teste automatizado",
+        duracaoSegundos: 30,
+        prioridade: "invalida",
+      },
+    };
+
+    await expect(createAtendimento.run(request as any)).rejects.toThrow(
+      "prioridade inválida.",
+    );
+
+    const snapshot = await db
+      .collection("atendimentos")
+      .where("tenantId", "==", "tenant-teste")
+      .where("transcricao", "==", "teste automatizado")
+      .where("prioridade", "==", "invalida")
+      .get();
+
+    expect(snapshot.empty).toBe(true);
+  });
 });
