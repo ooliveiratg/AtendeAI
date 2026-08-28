@@ -73,7 +73,7 @@ export default function App() {
       {erro && <p style={{ color: "red" }}>{erro}</p>}
       <ul>
         {atendimentos.map((a) => (
-          <section
+          <li
             style={{
               display: "flex",
               flexDirection: "row",
