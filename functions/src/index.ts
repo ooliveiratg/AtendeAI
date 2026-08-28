@@ -2,6 +2,8 @@ import { onCall, HttpsError } from "firebase-functions/v2/https";
 import { db } from "./admin";
 import { PrioridadeTiposEnum } from "./enum/PrioridadeEnum";
 import { CreateAtendimentoDTO } from "./dto/CreateAtendimentoDTO";
+import { UpdateAtendimentoDTO } from "./dto/UpdateAtendimentoDTO";
+import { StatusEnum } from "./enum/StatusEnum";
 
 /**
  * Function de exemplo — só para você confirmar que o ambiente está rodando.
@@ -55,9 +57,11 @@ export const createAtendimento = onCall(async (request) => {
 
   if (prioridade != null) {
     if (
-      prioridade === PrioridadeTiposEnum.alta ||
-      prioridade === PrioridadeTiposEnum.baixa ||
-      prioridade === PrioridadeTiposEnum.media
+      [
+        PrioridadeTiposEnum.alta,
+        PrioridadeTiposEnum.baixa,
+        PrioridadeTiposEnum.media,
+      ].includes(prioridade)
     ) {
       dbPrioridade = prioridade;
     } else {
@@ -75,4 +79,48 @@ export const createAtendimento = onCall(async (request) => {
   });
 
   return { id: doc.id };
+});
+
+export const updateAtendimentoStatus = onCall(async (request) => {
+  const { atendimentoId, novoStatus, tenantId }: UpdateAtendimentoDTO =
+    request.data ?? {};
+
+  if (!tenantId || !novoStatus) {
+    throw new HttpsError(
+      "invalid-argument",
+      "tenantId e novoStatus é obrigatório.",
+    );
+  }
+
+  const atendimentoDoc = await db
+    .collection("atendimentos")
+    .doc(atendimentoId)
+    .get();
+  if (!atendimentoDoc.exists) {
+    throw new HttpsError("not-found", "Atendimento não encontrado.");
+  }
+
+  const atendimento = atendimentoDoc.data();
+
+  if (atendimento?.tenantId !== tenantId) {
+    throw new HttpsError("not-found", "TenantId não encontrado.");
+  }
+
+  if (
+    ![StatusEnum.novo, StatusEnum.pendente, StatusEnum.resolvido].includes(
+      novoStatus,
+    )
+  ) {
+    throw new HttpsError("not-found", "TenantId não encontrado.");
+  }
+
+  await db.collection("atendimentos").doc(atendimentoId).update({
+    status: novoStatus,
+  });
+
+  return {
+    message: "Atualizado com sucesso",
+    id: atendimentoId,
+    status: novoStatus,
+  };
 });
